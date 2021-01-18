@@ -3,6 +3,10 @@ package com.eomcs.pms;
 import java.sql.Date;
 import java.util.Scanner;
 
+// 1) 회원 데이터를 다루는 메서드를 별도로 분류한다.
+//    MemberHandler 클래스를 정의한다.
+//    addMember(), listMember()메서드를 MemberHandler 클래스로 옮긴다
+
 public class App{
 
   static Scanner scanner = new Scanner(System.in);
@@ -21,24 +25,17 @@ public class App{
   public static void addMember() {
     System.out.println("[회원 등록]");
 
-    System.out.print("번호? ");
-    no[size] = scanner.nextInt();
-    scanner.nextLine();
+    no[size] = promptInt("번호? ");
 
-    System.out.print("이름? ");
-    name[size] = scanner.nextLine();
+    name[size] = promptString("이름? ");
 
-    System.out.print("이메일? ");
-    mail[size] = scanner.nextLine();
+    mail[size] = promptString("이메일? ");
 
-    System.out.print("암호? ");
-    pw[size] = scanner.nextLine();
+    pw[size] = promptString("암호? ");
 
-    System.out.print("사진? ");
-    photo[size] = scanner.nextLine();
+    photo[size] = promptString("사진? ");
 
-    System.out.print("전화? ");
-    tel[size] = scanner.nextLine();
+    tel[size] = promptString("전화? ");
 
     date[size] = new Date(System.currentTimeMillis());
 
@@ -71,27 +68,19 @@ public class App{
   public static void addProject() {
     System.out.println("[프로젝트 등록]");
 
-    System.out.print("번호? ");
-    pno[psize] = scanner.nextInt();
-    scanner.nextLine();
+    pno[psize] = promptInt("번호? ");
 
-    System.out.print("프로젝트명? ");
-    pproject[psize] = scanner.nextLine();
+    pproject[psize] = promptString("프로젝트? ");
 
-    System.out.print("내용? ");
-    pcontent[psize] = scanner.nextLine();
+    pcontent[psize] = promptString("내용? ");
 
-    System.out.print("시작일? ");
-    pstartDate[psize] = Date.valueOf(scanner.nextLine());
+    pstartDate[psize] = promptDate("시작일? ");
 
-    System.out.print("종료일? ");
-    pendDate[psize] = Date.valueOf(scanner.nextLine());
+    pendDate[psize] = promptDate("종료일? ");
 
-    System.out.print("만든이? ");
-    powner[psize] = scanner.nextLine();
+    powner[psize] = promptString("만든이? ");
 
-    System.out.print("팀원? ");
-    pmember[psize] = scanner.nextLine();
+    pmember[psize] = promptString("팀원? ");
 
     psize++;
 
@@ -119,25 +108,15 @@ public class App{
   public static void addTask() {
     System.out.println("[작업 등록]");
 
-    System.out.print("번호? ");
-    tno[tsize] = scanner.nextInt();
-    scanner.nextLine();
+    tno[tsize] = promptInt("번호? ");
 
-    System.out.print("내용? ");
-    tcontent[tsize] = scanner.nextLine();
+    tcontent[tsize] = promptString("내용? ");
 
-    System.out.print("완료일? ");
-    tendDate[tsize] = Date.valueOf(scanner.nextLine());
+    tendDate[tsize] = promptDate("완료일? ");
 
-    System.out.println("상태? ");
-    System.out.println("0: 신규");
-    System.out.println("1: 진행중");
-    System.out.println("2: 완료");
-    System.out.print("> ");
-    tstatus[tsize] = Integer.valueOf(scanner.nextLine());
+    tstatus[tsize] = promptInt("상태?\n" + "0: 신규\n" + "1: 진행중\n" + "2: 완료\n" + "> ");
 
-    System.out.print("담당자? ");
-    towner[tsize] = scanner.nextLine();
+    towner[tsize] = promptString("담당자? ");
 
     tsize++;
 
@@ -175,8 +154,11 @@ public class App{
 
     while (true) {
 
-      System.out.print("명령> ");
-      String order = scanner.nextLine();
+      //사용자에게 명령어를 입력 받는 코드
+
+      //System.out.print("명령> ");
+      //String order = scanner.nextLine();
+      String order = promptString("명령> ");
 
       if (order.equalsIgnoreCase("/member/add")) {
         addMember();
@@ -205,5 +187,23 @@ public class App{
     }
     scanner.close();
 
+  }
+
+  //사용자에게 명령 입력 받는 메소드
+  static String promptString(String title){ 
+    System.out.print(title);
+    return scanner.nextLine(); 
+  }
+
+  //명령 string 으로 입력받아서 int 값으로 전환해주는 메소드
+  static int promptInt(String title){
+    String str = promptString(title);
+    return Integer.valueOf(str);
+  }
+
+  //입력받은 명령을 Date 값으로 전환해주는 메소드
+  static Date promptDate(String title) {
+    String str = promptString(title);
+    return Date.valueOf(str);
   }
 }
