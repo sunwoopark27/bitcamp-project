@@ -7,10 +7,15 @@ public class App {
 
     java.util.Scanner keyScan = new java.util.Scanner(keyboard);
 
+    //java.util.Scanner keyScan = new java.util.Scanner(System.in);
+    //위의 두줄을 이렇게 한줄로 적어줘도 된다.
+
     System.out.println("[회원]");
 
     System.out.print("번호? ");
     String id = keyScan.nextLine();
+    //사용자가 한줄의 문자열을 입력할 때까지 기다림
+    //입력하면 return
 
     System.out.print("이름? ");
     String name = keyScan.nextLine();

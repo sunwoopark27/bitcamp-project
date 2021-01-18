@@ -1,10 +1,12 @@
 package com.eomcs.pms;
 
+import java.sql.Date; //date import
+import java.util.Scanner;
+
 public class App2 {
   public static void main(String[] args) {
 
-    java.io.InputStream keyboard = System.in;
-    java.util.Scanner keyScan = new java.util.Scanner(System.in);
+    Scanner keyScan = new Scanner(System.in);
 
     System.out.println("[프로젝트]");
 
@@ -19,10 +21,11 @@ public class App2 {
     String content = keyScan.nextLine();
 
     System.out.print("시작일? ");
-    String startDate = keyScan.nextLine();
+    Date startDate = Date.valueOf(keyScan.nextLine());
+    //사용자가 입력한 날짜 문자열을 date 도구(=객체)로 return
 
     System.out.print("종료일? ");
-    String endDate = keyScan.nextLine();
+    Date endDate = Date.valueOf(keyScan.nextLine());
 
     System.out.print("만든이? ");
     String manager = keyScan.nextLine();
