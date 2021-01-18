@@ -1,9 +1,9 @@
 package com.eomcs.pms;
 
-import java.sql.Date;
+import java.sql.Date; //date import
 import java.util.Scanner;
 
-public class App2{
+public class App2 {
   public static void main(String[] args) {
 
     Scanner scanner = new Scanner(System.in);
