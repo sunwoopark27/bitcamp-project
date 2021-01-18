@@ -1,15 +1,8 @@
 package com.eomcs.pms;
 
-<<<<<<< HEAD
 import java.sql.Date; //date import
 import java.util.Scanner;
 
-=======
-import java.sql.Date;
-import java.util.Scanner;
-
-
->>>>>>> 6855039ba6ee9569c8f18fdf7f03aac9019af4eb
 public class App2 {
   public static void main(String[] args) {
 
@@ -29,10 +22,7 @@ public class App2 {
 
     System.out.print("시작일? ");
     Date startDate = Date.valueOf(keyScan.nextLine());
-<<<<<<< HEAD
     //사용자가 입력한 날짜 문자열을 date 도구(=객체)로 return
-=======
->>>>>>> 6855039ba6ee9569c8f18fdf7f03aac9019af4eb
 
     System.out.print("종료일? ");
     Date endDate = Date.valueOf(keyScan.nextLine());
