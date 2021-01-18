@@ -39,7 +39,7 @@ public class App3 {
       System.out.println("1: 진행중");
       System.out.println("2: 완료");
       System.out.print("> ");
-      status[i] = Integer.parseInt(scanner.nextLine());
+      status[i] = Integer.valueOf(scanner.nextLine());
 
       System.out.print("담당자? ");
       owner[i] = scanner.nextLine();
