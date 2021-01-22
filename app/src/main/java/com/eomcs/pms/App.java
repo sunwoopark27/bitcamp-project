@@ -1,23 +1,31 @@
 package com.eomcs.pms;
 
 import com.eomcs.pms.handler.BoardHandler;
-import com.eomcs.pms.handler.BoardHandler2;
-import com.eomcs.pms.handler.BoardHandler3;
-import com.eomcs.pms.handler.BoardHandler4;
-import com.eomcs.pms.handler.BoardHandler5;
-import com.eomcs.pms.handler.BoardHandler6;
 import com.eomcs.pms.handler.MemberHandler;
 import com.eomcs.pms.handler.ProjectHandler;
 import com.eomcs.pms.handler.TaskHandler;
 import com.eomcs.util.Prompt;
 
-// 1) '/board/add' 명령 처리 추가
-// 2) '/board/list' 명령 처리 추가
-// 3) 두 번째 게시판 추가
-// 4) 세 번째, 네 번째, 다섯 번째, 여섯 번째 게시판 추가
 public class App {
 
   public static void main(String[] args) {
+
+    // 각 게시판 데이터를 저장할 메모리 준비
+    BoardHandler boardList1 = new BoardHandler();
+    BoardHandler boardList2 = new BoardHandler();
+    BoardHandler boardList3 = new BoardHandler();
+    BoardHandler boardList4 = new BoardHandler();
+    BoardHandler boardList5 = new BoardHandler();
+    BoardHandler boardList6 = new BoardHandler();
+
+    // 각 회원 목록 데이터를 저장할 메모리 준비
+    MemberHandler memberList = new MemberHandler(); // = null; 하면 인스턴스 주소가 없는거죠
+
+    // 각 프로젝트 목록 데이터를 저장할 메모리 준비
+    ProjectHandler projectList = new ProjectHandler();
+
+    // 각 작업 목록 데이터를 저장할 메모리 준비
+    TaskHandler taskList = new TaskHandler();
 
     loop:
       while (true) {
@@ -25,58 +33,58 @@ public class App {
 
         switch (command) {
           case "/member/add":
-            MemberHandler.add();
+            memberList.add();
             break;
           case "/member/list":
-            MemberHandler.list();
+            memberList.list();
             break;
           case "/project/add":
-            ProjectHandler.add();
+            projectList.add(memberList);
             break;
           case "/project/list":
-            ProjectHandler.list();
+            projectList.list();
             break;
           case "/task/add":
-            TaskHandler.add();
+            taskList.add(memberList);
             break;
           case "/task/list":
-            TaskHandler.list();
+            taskList.list();
             break;
           case "/board/add":
-            BoardHandler.add();
+            boardList1.add();
             break;
           case "/board/list":
-            BoardHandler.list();
+            boardList1.list();
             break;
           case "/board2/add":
-            BoardHandler2.add();
+            boardList2.add();
             break;
           case "/board2/list":
-            BoardHandler2.list();
+            boardList2.list();
             break;
           case "/board3/add":
-            BoardHandler3.add();
+            boardList3.add();
             break;
           case "/board3/list":
-            BoardHandler3.list();
+            boardList3.list();
             break;
           case "/board4/add":
-            BoardHandler4.add();
+            boardList4.add();
             break;
           case "/board4/list":
-            BoardHandler4.list();
+            boardList4.list();
             break;
           case "/board5/add":
-            BoardHandler5.add();
+            boardList5.add();
             break;
           case "/board5/list":
-            BoardHandler5.list();
+            boardList5.list();
             break;
           case "/board6/add":
-            BoardHandler6.add();
+            boardList6.add();
             break;
-          case "/board6/list":
-            BoardHandler6.list();
+          case "/boar6/list":
+            boardList6.list();
             break;
           case "quit":
           case "exit":
