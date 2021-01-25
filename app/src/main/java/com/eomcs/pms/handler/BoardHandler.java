@@ -6,15 +6,13 @@ import com.eomcs.util.Prompt;
 
 public class BoardHandler {
 
-  //공동으로 사용하는값은 static 필드로 선언한다.
   static final int LENGTH = 100;
 
-  //개별적으로 관리해야하는 값은 instance 필드로 선언한다.
   Board[] boards = new Board[LENGTH];   
   int size = 0;
 
-
   public void add() {
+
     System.out.println("[게시글 등록]");
 
     Board b = new Board();

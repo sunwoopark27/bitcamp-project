@@ -10,7 +10,6 @@ public class App {
 
   public static void main(String[] args) {
 
-    // 각 게시판 데이터를 저장할 메모리 준비
     BoardHandler boardList1 = new BoardHandler();
     BoardHandler boardList2 = new BoardHandler();
     BoardHandler boardList3 = new BoardHandler();
@@ -18,14 +17,19 @@ public class App {
     BoardHandler boardList5 = new BoardHandler();
     BoardHandler boardList6 = new BoardHandler();
 
-    // 각 회원 목록 데이터를 저장할 메모리 준비
-    MemberHandler memberList = new MemberHandler(); // = null; 하면 인스턴스 주소가 없는거죠
+    MemberHandler memberList = new MemberHandler();
 
-    // 각 프로젝트 목록 데이터를 저장할 메모리 준비
     ProjectHandler projectList = new ProjectHandler();
 
-    // 각 작업 목록 데이터를 저장할 메모리 준비
+    //ProjectHandler가 의존하는 객체(dependency)
+    //add() 메서드 호출할 때마다 파라미터에 넘기는 대신
+    //계속 사용할 수 있도록 인스턴스 필드에 담아 놓는다.
+    projectList.memberList = memberList; // 위에 있는 memberList 주자는거야
+
     TaskHandler taskList = new TaskHandler();
+
+    //TaskHandler가 사용할 의존 객체를 주입한다.
+    taskList.memberList = memberList; //위에 선언한거 주입하라고
 
     loop:
       while (true) {
@@ -39,13 +43,13 @@ public class App {
             memberList.list();
             break;
           case "/project/add":
-            projectList.add(memberList);
+            projectList.add();
             break;
           case "/project/list":
             projectList.list();
             break;
           case "/task/add":
-            taskList.add(memberList);
+            taskList.add();
             break;
           case "/task/list":
             taskList.list();
@@ -83,7 +87,7 @@ public class App {
           case "/board6/add":
             boardList6.add();
             break;
-          case "/boar6/list":
+          case "/board6/list":
             boardList6.list();
             break;
           case "quit":
