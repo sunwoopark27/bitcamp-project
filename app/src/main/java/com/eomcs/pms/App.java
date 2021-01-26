@@ -19,17 +19,15 @@ public class App {
 
     MemberHandler memberList = new MemberHandler();
 
-    ProjectHandler projectList = new ProjectHandler();
+    // 각 프로젝트 목록 데이터를 저장할 메모리 준비
+    //   - 생성자에서 MemberHandler 개게를 주입하라고 강요한다.
+    //   - projectHandler 객체 만들려면 반드시 주입해야 한다.
+    ProjectHandler projectList = new ProjectHandler(memberList);
 
-    //ProjectHandler가 의존하는 객체(dependency)
-    //add() 메서드 호출할 때마다 파라미터에 넘기는 대신
-    //계속 사용할 수 있도록 인스턴스 필드에 담아 놓는다.
-    projectList.memberList = memberList; // 위에 있는 memberList 주자는거야
-
-    TaskHandler taskList = new TaskHandler();
-
-    //TaskHandler가 사용할 의존 객체를 주입한다.
-    taskList.memberList = memberList; //위에 선언한거 주입하라고
+    // 각 프로젝트 목록 데이터를 저장할 메모리 준비
+    //   - 생성자에서 MemberHandler 개게를 주입하라고 강요한다.
+    //   - TaskHandler 객체 만들려면 반드시 주입해야 한다.
+    TaskHandler taskList = new TaskHandler(memberList);
 
     loop:
       while (true) {
