@@ -7,19 +7,20 @@ public class ProjectHandler {
 
   static final int LENGTH = 100;
 
-  //의존 객체(dependency)를 담을 인스턴스 필드
-  //- 메소드가 작업할 때 사용할 객체를 담는다.
+  // 의존 객체(dependency)를 담을 인스턴스 필드
+  // - 메서드가 작업할 때 사용할 객체를 담는다.
   MemberHandler memberList;
 
   Project[] projects = new Project[LENGTH];
   int size = 0;
 
-  //생성자 정의
-  //- projectHandler가 의존하는 객체를 반드시 주입하도록 강요한다,
-  //-  다른 패키지에서 생성자 호출할 수 있도록 public
-  public ProjectHandler(MemberHandler memberHandler){
+  // 생성자 정의
+  // - ProjectHandler가 의존하는 객체를 반드시 주입하도록 강요한다.
+  // - 다른 패키지에서 생성자를 호출할 수 있도록 공개한다.
+  public ProjectHandler(MemberHandler memberHandler) {
     this.memberList = memberHandler;
   }
+
 
   public void add() {
     System.out.println("[프로젝트 등록]");
@@ -65,8 +66,8 @@ public class ProjectHandler {
   public void list() {
     System.out.println("[프로젝트 목록]");
 
-    for (int i = 0; i < this.size; i++) {
-      Project p = this.projects[i];
+    for (int i = 0; i < size; i++) {
+      Project p = projects[i];
       System.out.printf("%d, %s, %s, %s, %s, [%s]\n",
           p.no, p.title, p.startDate, p.endDate, p.owner, p.members);
     }

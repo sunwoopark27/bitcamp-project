@@ -13,10 +13,8 @@ public class MemberHandler {
   public void add() {
     System.out.println("[회원 등록]");
 
-    // 1) 회원 정보를 담을 메모리를 준비한다.
     Member m = new Member();
 
-    // 2) 사용자가 입력한 값을 Member 인스턴스에 저장한다.
     m.no = Prompt.inputInt("번호? ");
     m.name = Prompt.inputString("이름? ");
     m.email = Prompt.inputString("이메일? ");
@@ -25,13 +23,7 @@ public class MemberHandler {
     m.tel = Prompt.inputString("전화? ");
     m.registeredDate = new java.sql.Date(System.currentTimeMillis());
 
-    // 3) 사용자의 정보가 저장된 인스턴스 주소를 레퍼런스 배열에 보관한다.
     this.members[this.size++] = m;
-    // 위 문장은 컴파일할 때 다음 문장으로 변경된다.
-    //    int temp = size;
-    //    size++;
-    //    members[temp] = m;
-
   }
 
   public void list() {
