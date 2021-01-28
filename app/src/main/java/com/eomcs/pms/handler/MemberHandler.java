@@ -10,6 +10,44 @@ public class MemberHandler {
   Member[] members = new Member[LENGTH];  // 레퍼런스 배열 준비  
   int size = 0;
 
+  public void service() {
+    loop:
+      while (true) {
+        System.out.println("메인 / 회원-----------------------------");
+        System.out.println("1.등록");
+        System.out.println("2.목록");
+        System.out.println("3.상세 보기");
+        System.out.println("4.변경");
+        System.out.println("5.삭제");
+        System.out.println("0.이전 메뉴");
+
+        String command = com.eomcs.util.Prompt.inputString("회원> ");
+        System.out.println();
+
+        switch (command) {
+          case "1":
+            this.add();
+            break;
+          case "2":
+            this.list();
+            break;
+          case "3":
+            this.detail();
+            break;  
+          case "4":
+            this.update();
+            break; 
+          case "5":
+            this.delete();
+            break; 
+          case "0":
+            break loop;
+          default:
+            System.out.println("메뉴 번호가 맞지 않습니다.");
+        }
+      }
+  }
+
   public void add() {
     System.out.println("[회원 등록]");
 
@@ -24,6 +62,7 @@ public class MemberHandler {
     m.registeredDate = new java.sql.Date(System.currentTimeMillis());
 
     this.members[this.size++] = m;
+    System.out.println();
   }
 
   public void list() {
@@ -34,6 +73,7 @@ public class MemberHandler {
       // 번호, 이름, 이메일, 전화, 가입일
       System.out.printf("%d, %s, %s, %s, %s\n", // 출력 형식 지정
           m.no, m.name, m.email, m.tel, m.registeredDate);
+      System.out.println();
     }
   }
 
@@ -44,6 +84,114 @@ public class MemberHandler {
       }
     }
     return false;
+  }
+
+  public void detail() {
+    System.out.println("[회원 상세보기]");
+
+    int no = Prompt.inputInt("번호? ");
+
+    Member member = findByNo(no);
+    if (member == null) {
+      System.out.println("해당 번호의 회원이 없습니다.");
+      return;
+    }
+
+    System.out.printf("이름: %s\n", member.name);
+    System.out.printf("이메일: %s\n", member.email);
+    System.out.printf("사진: %s\n", member.photo);
+    System.out.printf("전화: %s\n", member.tel);
+    System.out.printf("가입일: %s\n", member.registeredDate);
+    System.out.println();
+
+  }
+
+  public void update() {
+    System.out.println("[회원 변경]");
+
+    int no = Prompt.inputInt("번호? ");
+
+    Member member = findByNo(no);
+    if (member == null) {
+      System.out.println("해당 번호의 회원이 없습니다.");
+      return;
+    }
+
+    System.out.printf("이름: %s\n", member.name);
+    System.out.printf("이메일: %s\n", member.email);
+    System.out.printf("사진: %s\n", member.photo);
+    System.out.printf("전화: %s\n", member.tel);
+    System.out.printf("가입일: %s\n", member.registeredDate);
+
+    String name = Prompt.inputString(String.format("이름(%s)? ", member.name));
+    String email = Prompt.inputString(String.format("이메일(%s)? ", member.email));
+    String photo = Prompt.inputString(String.format("사진(%s)? ", member.photo));
+    String tel = Prompt.inputString(String.format("전화(%s)? ", member.tel));
+
+    String input = Prompt.inputString("정말 변경하시겠습니까?(y/N) ");
+
+    if (input.equalsIgnoreCase("Y")) {
+      member.name = name;
+      member.email = email;
+      member.photo = photo;
+      member.tel = tel;
+      System.out.println("회원을 변경하였습니다.");
+      System.out.println();
+
+    } else {
+      System.out.println("회원 변경을 취소하였습니다.");
+      System.out.println();
+    }
+  }
+
+  public void delete() {
+    System.out.println("[회원 삭제]");
+
+    int no = Prompt.inputInt("번호? ");
+
+    int i = indexOf(no);
+    if (i == -1) {
+      System.out.println("해당 번호의 회원이 없습니다.");
+      System.out.println();
+      return;
+    }
+
+    String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
+
+    if (input.equalsIgnoreCase("Y")) {
+      for (int x = i + 1; x < this.size; x++) {
+        this.members[x-1] = this.members[x];
+      }
+      members[--this.size] = null; // 앞으로 당긴 후 맨 뒤의 항목은 null로 설정한다.
+
+      System.out.println("회원을 삭제하였습니다.");
+      System.out.println();
+
+    } else {
+      System.out.println("회원 삭제를 취소하였습니다.");
+      System.out.println();
+    }
+
+  }
+
+  // 회원 번호에 해당하는 인스턴스를 배열에서 찾아 그 인덱스를 리턴한다. 
+  int indexOf(int memberNo) {
+    for (int i = 0; i < this.size; i++) {
+      Member member = this.members[i];
+      if (member.no == memberNo) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // 회원 번호에 해당하는 인스턴스를 찾아 리턴한다.
+  Member findByNo(int memberNo) {
+    int i = indexOf(memberNo);
+    if (i == -1) 
+      return null;
+    else 
+      return this.members[i];
   }
 }
 

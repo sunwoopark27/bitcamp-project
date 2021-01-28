@@ -13,6 +13,44 @@ public class BoardHandler {
   Board[] boards = new Board[LENGTH];   
   int size = 0;
 
+  public void service() {
+    loop:
+      while (true) {
+        System.out.println("메인 / 게시판-----------------------------");
+        System.out.println("1.등록");
+        System.out.println("2.목록");
+        System.out.println("3.상세 보기");
+        System.out.println("4.변경");
+        System.out.println("5.삭제");
+        System.out.println("0.이전 메뉴");
+
+        String command = com.eomcs.util.Prompt.inputString("게시판> ");
+        System.out.println();
+
+        switch (command) {
+          case "1":
+            this.add();
+            break;
+          case "2":
+            this.list();
+            break;
+          case "3":
+            this.detail();
+            break;  
+          case "4":
+            this.update();
+            break; 
+          case "5":
+            this.delete();
+            break; 
+          case "0":
+            break loop;
+          default:
+            System.out.println("메뉴 번호가 맞지 않습니다.");
+        }
+      }
+  }
+
   public void add() {
     System.out.println("[게시글 등록]");
 
@@ -35,7 +73,7 @@ public class BoardHandler {
     for (int i = 0; i < this.size; i++) {
       Board b = this.boards[i];
 
-      if(b == null)
+      if (b == null)
         continue;
 
       // 번호, 제목, 등록일, 작성자, 조회수, 좋아요
@@ -46,6 +84,7 @@ public class BoardHandler {
           b.writer, 
           b.viewCount,
           b.like);
+      System.out.println();
     }
   }
 
@@ -55,17 +94,19 @@ public class BoardHandler {
     int no = Prompt.inputInt("번호? ");
 
     Board board = findByNo(no);
-    if(board == null) {
-      System.out.println("해당번호의 게시글이 없습니다.");
+    if (board == null) {
+      System.out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
+
     board.viewCount++;
     System.out.printf("제목: %s\n", board.title);
     System.out.printf("내용: %s\n", board.content);
     System.out.printf("작성자: %s\n", board.writer);
     System.out.printf("등록일: %s\n", board.registeredDate);
     System.out.printf("조회수: %d\n", board.viewCount);
-    return;
+    System.out.println();
+
   }
 
   public void update() {
@@ -74,24 +115,25 @@ public class BoardHandler {
     int no = Prompt.inputInt("번호? ");
 
     Board board = findByNo(no);
-    if(board == null) {
-      System.out.println("해당번호의 게시글이 없습니다.");
-      return;    
+    if (board == null) {
+      System.out.println("해당 번호의 게시글이 없습니다.");
+      return;
     }
+
     String title = Prompt.inputString(String.format("제목(%s)? ", board.title));
     String content = Prompt.inputString(String.format("내용(%s)? ", board.content));
 
-    String input = Prompt.inputString("정말 바꾸시겠습니까?(y/N) ");
+    String input = Prompt.inputString("정말 변경하시겠습니까?(y/N) ");
 
-    if (input.equalsIgnoreCase("y")) {
+    if (input.equalsIgnoreCase("Y")) {
       board.title = title;
       board.content = content;
       System.out.println("게시글을 변경하였습니다.");
-    }else {
+
+    } else {
       System.out.println("게시글 변경을 취소하였습니다.");
     }
   }
-
 
   public void delete() {
     System.out.println("[게시글 삭제]");
@@ -99,44 +141,47 @@ public class BoardHandler {
     int no = Prompt.inputInt("번호? ");
 
     int i = indexOf(no);
-    if(i == -1) {
-      System.out.println("해당번호의 게시글이 없습니다.");
+    if (i == -1) {
+      System.out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
+
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
-    if(input.equalsIgnoreCase("y")) {
-      for(int x = i + 1; x < this.size; x++) {
+
+    if (input.equalsIgnoreCase("Y")) {
+      for (int x = i + 1; x < this.size; x++) {
         this.boards[x-1] = this.boards[x];
       }
-      boards[--this.size] = null;
+      boards[--this.size] = null; // 앞으로 당긴 후 맨 뒤의 항목은 null로 설정한다.
+
       System.out.println("게시글을 삭제하였습니다.");
-    }else {
-      System.out.println("게시글 삭제을 취소하였습니다.");
+
+    } else {
+      System.out.println("게시글 삭제를 취소하였습니다.");
     }
-    return;
+
   }
 
+  // 게시글 번호에 해당하는 인스턴스를 배열에서 찾아 그 인덱스를 리턴한다. 
   int indexOf(int boardNo) {
     for (int i = 0; i < this.size; i++) {
       Board board = this.boards[i];
-      if(board.no == boardNo) {
+      if (board.no == boardNo) {
         return i;
       }
     }
     return -1;
   }
 
+  // 게시글 번호에 해당하는 인스턴스를 찾아 리턴한다.
   Board findByNo(int boardNo) {
     int i = indexOf(boardNo);
-    if(i == -1) {
+    if (i == -1) 
       return null;
-    }else {
+    else 
       return this.boards[i];
-    }
   }
 }
-
-
 
 
 
