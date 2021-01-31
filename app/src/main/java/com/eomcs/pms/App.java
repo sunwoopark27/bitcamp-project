@@ -18,34 +18,75 @@ public class App {
 
     loop:
       while (true) {
-        System.out.println("메인-----------------------------");
-        System.out.println("1.게시판");
-        System.out.println("2.회원");
-        System.out.println("3.프로젝트");
-        System.out.println("4.작업");
-        System.out.println("0.종료");
-
-        String command = com.eomcs.util.Prompt.inputString("메인> ");
-        System.out.println();
+        String command = com.eomcs.util.Prompt.inputString("명령> ");
 
         switch (command) {
-          case "1":
-            boardHandler.service();
+          case "/member/add":
+            memberHandler.add();
             break;
-          case "2":
-            memberHandler.service();
+          case "/member/list":
+            memberHandler.list();
             break;
-          case "3":
-            projectHandler.service();
+          case "/member/ detail":
+            memberHandler.detail();
             break;  
-          case "4":
-            taskHandler.service();
+          case "/member/update":
+            memberHandler.update();
             break; 
-          case "0":
+          case "/member/delete":
+            memberHandler.delete();
+            break;
+          case "/project/add":
+            projectHandler.add();
+            break;
+          case "/project/list":
+            projectHandler.list();
+            break;
+          case "/project/detail": 
+            projectHandler.detail();
+            break;  
+          case "/project/update":
+            projectHandler.update();
+            break; 
+          case "/project/delete":
+            projectHandler.delete();
+            break;
+          case "/task/add":
+            taskHandler.add();
+            break;
+          case "/task/list":
+            taskHandler.list();
+            break;
+          case "/task/detail": 
+            taskHandler.detail();
+            break;  
+          case "/task/update":
+            taskHandler.update();
+            break; 
+          case "/task/delete":
+            taskHandler.delete();
+            break;
+          case "/board/add":
+            boardHandler.add();
+            break;
+          case "/board/list":
+            boardHandler.list();
+            break;
+          case "/board/detail":
+            boardHandler.detail();
+            break;  
+          case "/board/update":
+            boardHandler.update();
+            break; 
+          case "/board/delete":
+            boardHandler.delete();
+            break;
+          case "quit":
+          case "exit":
             System.out.println("안녕!");
             break loop;
           default:
-            System.out.println("메뉴 번호가 맞지 않습니다.");
+            System.out.println("실행할 수 없는 명령입니다.");
         }
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
       }

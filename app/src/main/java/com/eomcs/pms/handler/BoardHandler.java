@@ -6,50 +6,9 @@ import com.eomcs.util.Prompt;
 
 public class BoardHandler {
 
-  // 공동으로 사용하는 값은 스태틱 필드로 선언한다.
-  static final int LENGTH = 100;
-
-  // 개별적으로 관리해야 하는 값은 인스턴스 필드로 선언한다.
-  Board[] boards = new Board[LENGTH];   
+  Node first;
+  Node last;
   int size = 0;
-
-  public void service() {
-    loop:
-      while (true) {
-        System.out.println("메인 / 게시판-----------------------------");
-        System.out.println("1.등록");
-        System.out.println("2.목록");
-        System.out.println("3.상세 보기");
-        System.out.println("4.변경");
-        System.out.println("5.삭제");
-        System.out.println("0.이전 메뉴");
-
-        String command = com.eomcs.util.Prompt.inputString("게시판> ");
-        System.out.println();
-
-        switch (command) {
-          case "1":
-            this.add();
-            break;
-          case "2":
-            this.list();
-            break;
-          case "3":
-            this.detail();
-            break;  
-          case "4":
-            this.update();
-            break; 
-          case "5":
-            this.delete();
-            break; 
-          case "0":
-            break loop;
-          default:
-            System.out.println("메뉴 번호가 맞지 않습니다.");
-        }
-      }
-  }
 
   public void add() {
     System.out.println("[게시글 등록]");
@@ -62,19 +21,31 @@ public class BoardHandler {
     b.writer = Prompt.inputString("작성자? ");
     b.registeredDate = new Date(System.currentTimeMillis());
 
-    this.boards[this.size++] = b;
+    Node node = new Node(b); // board 객체를 담으세요(인스턴스 주소를 담는거야)
+
+    if(last == null) {
+      //연결리스트의 첫번째 항목이라면 마지막 항목과 첫 항목이 같은 box 가르킴
+      last = node;
+      first = node;
+      //prev = null; //이미 null로 되어있는거니까
+    }else { // 연결리스트에 이미 항목이 있다면
+      last.next = node; //현재 마지막 상자의 다음 상자가 새 상자를 가리키게 한다.
+      node.prev = last; // 새 상자에서 이전 상자로서 현재 마지막 상자를 가리키게 한다.
+      last = node; //새 상자가 마지막 상자가 되게 한다.
+    }
+    this.size++;
 
     System.out.println("게시글을 등록하였습니다.");
+
   }
 
   public void list() {
     System.out.println("[게시글 목록]");
 
-    for (int i = 0; i < this.size; i++) {
-      Board b = this.boards[i];
+    Node cursor = first;
 
-      if (b == null)
-        continue;
+    while(cursor != null) {
+      Board b = cursor.board;// 커서에 가리키는 값의 보드 변수
 
       // 번호, 제목, 등록일, 작성자, 조회수, 좋아요
       System.out.printf("%d, %s, %s, %s, %d, %d\n", 
@@ -84,7 +55,8 @@ public class BoardHandler {
           b.writer, 
           b.viewCount,
           b.like);
-      System.out.println();
+
+      cursor = cursor.next;
     }
   }
 
@@ -105,7 +77,6 @@ public class BoardHandler {
     System.out.printf("작성자: %s\n", board.writer);
     System.out.printf("등록일: %s\n", board.registeredDate);
     System.out.printf("조회수: %d\n", board.viewCount);
-    System.out.println();
 
   }
 
@@ -140,8 +111,8 @@ public class BoardHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int i = indexOf(no);
-    if (i == -1) {
+    Board board = findByNo(no);
+    if (board == null) {
       System.out.println("해당 번호의 게시글이 없습니다.");
       return;
     }
@@ -149,10 +120,33 @@ public class BoardHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i + 1; x < this.size; x++) {
-        this.boards[x-1] = this.boards[x];
+      Node cursor = first;
+      while(cursor != null) {
+        if(cursor.board == board) {
+          if(first == last) { //찾았는데 박스가 한개 있으면
+            first = last = null; 
+            break;
+          }
+          if(cursor == first) {
+            //a만약 현재 찾은 상자가 첫번째 상자라면
+            first = cursor.next;
+            //first box를 다음 박스 가리키게 하면 돼
+            cursor.prev = null;
+          }else { // 삭제하려는 현재상자의 이전 상자의 next값을 바꾸겠다는거야
+            cursor.prev.next = cursor.next;
+            if(cursor.next != null) { // 다음 박스가 있을 때만! 마지막 박스는 예외처리하기 위해
+              cursor.next.prev = cursor.prev;
+            }
+          }
+          if (cursor == last) { //내가 삭제하려는게 마지막 박스면
+            last = cursor.prev; //라스트 박스의 주소를 그 커서 이전 주소로
+          }
+          this.size--;
+          break;
+        }
+
+        cursor = cursor.next; //빼면 무한 루프
       }
-      boards[--this.size] = null; // 앞으로 당긴 후 맨 뒤의 항목은 null로 설정한다.
 
       System.out.println("게시글을 삭제하였습니다.");
 
@@ -162,24 +156,27 @@ public class BoardHandler {
 
   }
 
-  // 게시글 번호에 해당하는 인스턴스를 배열에서 찾아 그 인덱스를 리턴한다. 
-  int indexOf(int boardNo) {
-    for (int i = 0; i < this.size; i++) {
-      Board board = this.boards[i];
-      if (board.no == boardNo) {
-        return i;
+  // 게시글 번호에 해당하는 인스턴스를 찾아 리턴한다.
+  Board findByNo(int boardNo) {    
+    Node cursor = first;
+    while(cursor != null) {
+      Board b = cursor.board;
+      if(b.no == boardNo) {
+        return b;
       }
+      cursor = cursor.next;// 못찾았으면 다음 박스
     }
-    return -1;
+    return null; // 끝까지 못찾았으면 null
   }
 
-  // 게시글 번호에 해당하는 인스턴스를 찾아 리턴한다.
-  Board findByNo(int boardNo) {
-    int i = indexOf(boardNo);
-    if (i == -1) 
-      return null;
-    else 
-      return this.boards[i];
+  static class Node{
+    Board board;
+    Node next;
+    Node prev; //이전 밗의 주소 담을거 
+
+    Node(Board b){
+      this.board = b;
+    }
   }
 }
 

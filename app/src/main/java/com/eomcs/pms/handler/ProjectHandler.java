@@ -6,90 +6,64 @@ import com.eomcs.util.Prompt;
 
 public class ProjectHandler {
 
-  static final int LENGTH = 100;
-
-  // 의존 객체(dependency)를 담을 인스턴스 필드
-  // - 메서드가 작업할 때 사용할 객체를 담는다.
-  MemberHandler memberList;
-
-  Project[] projects = new Project[LENGTH];
+  Node first;
+  Node last;
   int size = 0;
-  public void service() {
-    loop:
-      while (true) {
-        System.out.println("메인 / 프로젝트-----------------------------");
-        System.out.println("1.등록");
-        System.out.println("2.목록");
-        System.out.println("3.상세 보기");
-        System.out.println("4.변경");
-        System.out.println("5.삭제");
-        System.out.println("0.이전 메뉴");
-
-        String command = com.eomcs.util.Prompt.inputString("프로젝트> ");
-        System.out.println();
-
-        switch (command) {
-          case "1":
-            this.add();
-            break;
-          case "2":
-            this.list();
-            break;
-          case "3":
-            this.detail();
-            break;  
-          case "4":
-            this.update();
-            break; 
-          case "5":
-            this.delete();
-            break; 
-          case "0":
-            break loop;
-          default:
-            System.out.println("메뉴 번호가 맞지 않습니다.");
-        }
-      }
-  }
+  MemberHandler memberHandler;
 
   // 생성자 정의
   // - ProjectHandler가 의존하는 객체를 반드시 주입하도록 강요한다.
   // - 다른 패키지에서 생성자를 호출할 수 있도록 공개한다.
   public ProjectHandler(MemberHandler memberHandler) {
-    this.memberList = memberHandler;
+    this.memberHandler = memberHandler;
   }
-
 
   public void add() {
     System.out.println("[프로젝트 등록]");
 
     Project p = new Project();
+
     p.no = Prompt.inputInt("번호? ");
     p.title = Prompt.inputString("프로젝트명? ");
     p.content = Prompt.inputString("내용? ");
     p.startDate = Prompt.inputDate("시작일? ");
     p.endDate = Prompt.inputDate("종료일? ");
 
-    p.owner = inputMember("만든이?(취소: 빈문자열)");
-    if(p.owner == null) {
-      System.out.println("프로젝트 등록을 취소합니다.");
-      System.out.println();
+    p.owner = inputMember("만든이?(취소: 빈 문자열) ");
+    if (p.owner == null) {
+      System.out.println("프로젝트 입력을 취소합니다.");
       return;
     }
 
     p.members = inputMembers("팀원?(완료: 빈 문자열) ");
 
-    this.projects[this.size++] = p;
+    Node node = new Node(p);
+
+    if (last == null) {
+      last = node;
+      first = node;
+      //prev = null;
+    }else {
+      last.next = node;
+      node.prev = last;
+      last = node;
+    }
+    this.size++;
+
   }
 
   public void list() {
     System.out.println("[프로젝트 목록]");
 
-    for (int i = 0; i < size; i++) {
-      Project p = projects[i];
+    Node cursor = first;
+
+    while(cursor != null) {
+      Project p = cursor.project;
+
       System.out.printf("%d, %s, %s, %s, %s, [%s]\n",
           p.no, p.title, p.startDate, p.endDate, p.owner, p.members);
-      System.out.println();
+
+      cursor = cursor.next;
     }
   }
 
@@ -130,12 +104,13 @@ public class ProjectHandler {
     Date endDate = Prompt.inputDate(String.format("종료일(%s)? ", project.endDate));
 
     String owner = inputMember(String.format("만든이(%s)?(취소: 빈 문자열) ", project.owner));
-    if(owner == null) {
+    if (owner == null) {
       System.out.println("프로젝트 변경을 취소합니다.");
       return;
     }
 
-    String members = inputMembers(String.format("팀원(%s)?(완료: 빈 문자열) ", project.members));
+    String members = inputMembers(
+        String.format("팀원(%s)?(완료: 빈 문자열) ", project.members));
 
     String input = Prompt.inputString("정말 변경하시겠습니까?(y/N) ");
 
@@ -159,8 +134,8 @@ public class ProjectHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    int i = indexOf(no);
-    if (i == -1) {
+    Project p = findByNo(no);
+    if (p == null) {
       System.out.println("해당 번호의 프로젝트이 없습니다.");
       return;
     }
@@ -168,11 +143,29 @@ public class ProjectHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      for (int x = i + 1; x < this.size; x++) {
-        this.projects[x-1] = this.projects[x];
+      Node cursor = first;
+      while(cursor != null) {
+        if(cursor.project == p) {
+          if(first == last) { //노드가 하나일 경우
+            first = null;
+            last = null;
+          }else if(cursor == first){ //첫번째 노드일 경우
+            first = cursor.next;
+            cursor.prev = null;
+          }else if(cursor == last) { //마지막 노드일경우
+            cursor.prev.next = null;
+            last = cursor.prev;
+          }else{//중간에 다른 노드들
+            cursor.prev.next = cursor.next;
+            if(cursor.next !=null) {
+              cursor.next.prev = cursor.prev;
+            }
+          }
+          this.size--;
+          break;
+        }
+        cursor = cursor.next;
       }
-      projects[--this.size] = null; // 앞으로 당긴 후 맨 뒤의 항목은 null로 설정한다.
-
       System.out.println("프로젝트을 삭제하였습니다.");
 
     } else {
@@ -181,24 +174,17 @@ public class ProjectHandler {
 
   }
 
-  // 프로젝트 번호에 해당하는 인스턴스를 배열에서 찾아 그 인덱스를 리턴한다. 
-  int indexOf(int projectNo) {
-    for (int i = 0; i < this.size; i++) {
-      Project project = this.projects[i];
-      if (project.no == projectNo) {
-        return i;
-      }
-    }
-    return -1;
-  }
 
   // 프로젝트 번호에 해당하는 인스턴스를 찾아 리턴한다.
   Project findByNo(int projectNo) {
-    int i = indexOf(projectNo);
-    if (i == -1) 
-      return null;
-    else 
-      return this.projects[i];
+    Node cursor = this.first;
+    while(cursor != null) {
+      if(projectNo  == cursor.project.no) {
+        return cursor.project;
+      }
+      cursor = cursor.next;
+    }
+    return null;
   }
 
   String inputMember(String promptTitle) {
@@ -207,19 +193,20 @@ public class ProjectHandler {
       if (name.length() == 0) {
         return null;
       } 
-      if (this.memberList.exist(name)) {
+      if (this.memberHandler.exist(name)) {
         return name;
       }
       System.out.println("등록된 회원이 아닙니다.");
     }
   }
-  String inputMembers (String promptTitle) {
+
+  String inputMembers(String promptTitle) {
     String members = "";
     while (true) {
       String name = inputMember(promptTitle);
       if (name == null) {
         return members;
-      } else{
+      } else {
         if (!members.isEmpty()) {
           members += ",";
         }
@@ -227,6 +214,17 @@ public class ProjectHandler {
       }
     }
   }
+
+  static class Node{
+    Project project;
+    Node next;
+    Node prev;
+
+    Node(Project p){
+      this.project = p;
+    }
+  }
+
 }
 
 
