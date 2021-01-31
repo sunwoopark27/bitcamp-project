@@ -151,7 +151,7 @@ public class ProjectHandler {
             last = null;
           }else if(cursor == first){ //첫번째 노드일 경우
             first = cursor.next;
-            cursor.prev = null;
+            first.prev = null;
           }else if(cursor == last) { //마지막 노드일경우
             cursor.prev.next = null;
             last = cursor.prev;
