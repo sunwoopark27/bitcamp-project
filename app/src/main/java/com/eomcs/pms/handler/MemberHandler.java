@@ -5,15 +5,12 @@ import com.eomcs.util.Prompt;
 
 public class MemberHandler {
 
-  Node first;
-  Node last; 
-  int size = 0;
+  public MemberList memberList = new MemberList();
 
   public void add() {
     System.out.println("[회원 등록]");
 
     Member m = new Member();
-
 
     m.no = Prompt.inputInt("번호? ");
     m.name = Prompt.inputString("이름? ");
@@ -23,42 +20,19 @@ public class MemberHandler {
     m.tel = Prompt.inputString("전화? ");
     m.registeredDate = new java.sql.Date(System.currentTimeMillis());
 
-    Node node = new Node(m);
+    memberList.add(m);
 
-    if(last == null) {
-      last = node;
-      first = node;
-    }else {
-      last.next = node;
-      node.prev = last;
-      last = node;
-    }
-    this.size++;
   }
 
   public void list() {
     System.out.println("[회원 목록]");
 
-    Node cursor = first;
-
-    while(cursor != null) {
-      Member m = cursor.member;
+    Member[] members = memberList.toArray();
+    for (Member m : members) {
       // 번호, 이름, 이메일, 전화, 가입일
       System.out.printf("%d, %s, %s, %s, %s\n", // 출력 형식 지정
           m.no, m.name, m.email, m.tel, m.registeredDate);
-      cursor = cursor.next;
     }
-  }
-
-  public boolean exist(String name) {
-    Node cursor = first;
-    while (cursor != null) {
-      if (name.equals(cursor.member.name)) {
-        return true;
-      }
-      cursor = cursor.next;
-    }
-    return false;
   }
 
   public void detail() {
@@ -66,7 +40,7 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
+    Member member = memberList.get(no);
     if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
@@ -85,14 +59,14 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
+    Member member = memberList.get(no);
     if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
     }
 
     System.out.printf("이름: %s\n", member.name);
-    System.out.printf("이메일: %s\n", member.email);
+    System.out.printf("이메일: d%s\n", member.email);
     System.out.printf("사진: %s\n", member.photo);
     System.out.printf("전화: %s\n", member.tel);
     System.out.printf("가입일: %s\n", member.registeredDate);
@@ -121,7 +95,7 @@ public class MemberHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Member member = findByNo(no);
+    Member member = memberList.get(no);
     if (member == null) {
       System.out.println("해당 번호의 회원이 없습니다.");
       return;
@@ -130,29 +104,8 @@ public class MemberHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      Node cursor = first;
-      while(cursor != null) {
-        if(cursor.member == member) {
-          if(first == last) {
-            first = last = null;
-            break;
-          }
-          if(cursor.prev == null) {
-            first = cursor.next;
-            cursor.prev = null;
-          }else {
-            cursor.prev.next = cursor.next;
-            if(cursor.next != null) {              
-              cursor.next.prev = cursor.prev;
-            }
-          }
-          if(cursor.next == null) {
-            last = cursor.prev;
-          }
-          break;
-        }
-        cursor = cursor.next;
-      }
+      memberList.delete(no);
+
       System.out.println("회원을 삭제하였습니다.");
 
     } else {
@@ -161,28 +114,8 @@ public class MemberHandler {
 
   }
 
-  // 회원 번호에 해당하는 인스턴스를 찾아 리턴한다.
-  Member findByNo(int memberNo) {
-    Node cursor = first;
-    while(cursor != null) {
-      Member m = cursor.member;
-      if(m.no == memberNo) { // 같으면
-        return m;
-      }
-      cursor = cursor.next;
-    }
-    return null;
-  }
 
-  static class Node{
-    Member member;
-    Node next;
-    Node prev;
 
-    Node(Member m){
-      this.member = m;
-    }
-  }
 }
 
 

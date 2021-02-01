@@ -6,14 +6,12 @@ import com.eomcs.util.Prompt;
 
 public class TaskHandler {
 
-  Node first;
-  Node last;
+  MemberList memberList;
 
-  MemberHandler memberList;
-  int size = 0;
+  TaskList taskList = new TaskList();
 
-  public TaskHandler(MemberHandler memberHandler) {
-    this.memberList = memberHandler;
+  public TaskHandler(MemberList memberList) {
+    this.memberList = memberList;
   }
 
   public void add() {
@@ -31,34 +29,17 @@ public class TaskHandler {
       return;
     }
 
-    Node node = new Node(t);
+    taskList.add(t);
 
-    if (first == null) {
-      first = node;
-      last = node;
-    }else {
-      last.next = node;
-      node.prev = last;
-      last = node;
-    }
-
-    this.size++;
   }
 
   public void list() {
     System.out.println("[작업 목록]");
 
-    Node cursor = first;
-
-    while (cursor != null) {
-
-      Task t = cursor.task;
-
+    Task[] tasks = taskList.toArray();
+    for(Task t : tasks) {
       System.out.printf("%d, %s, %s, %s, %s\n", 
           t.no, t.content, t.deadline, getStatusLabel(t.status), t.owner);
-
-      cursor = cursor.next;
-
     }
   }
 
@@ -67,7 +48,7 @@ public class TaskHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = findByNo(no);
+    Task task = taskList.get(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -80,14 +61,12 @@ public class TaskHandler {
 
   }
 
-
-
   public void update() {
     System.out.println("[작업 변경]");
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = findByNo(no);
+    Task task = taskList.get(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -122,7 +101,7 @@ public class TaskHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = findByNo(no);
+    Task task = taskList.get(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -131,63 +110,13 @@ public class TaskHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      Node cursor = first;
-      while(cursor != null) {
-        if(cursor.task.no == task.no ) {
-          if(cursor == first) {
-            cursor.next.prev = null;
-            first = cursor.next;
-            break;
-          }
-          if (first == last) {
-            first = last= null;
-          }else {
-            cursor.prev.next = cursor.next;
-            if (cursor.next != null) {
-              cursor.next.prev = cursor.prev;
-            }
-          }
-          if(cursor == last){
-            last = cursor.prev;
-          }
-          this.size--;
-          break;
-        }
-        cursor = cursor.next;
-      }
-
+      taskList.delete(no);
       System.out.println("작업을 삭제하였습니다.");
 
     } else {
       System.out.println("작업 삭제를 취소하였습니다.");
     }
 
-  }
-
-  // 작업 번호에 해당하는 인스턴스를 배열에서 찾아 그 인덱스를 리턴한다. 
-  Task indexOf(int taskNo) {
-    Node cursor = first;
-    while (cursor != null) {
-      Task task = cursor.task;
-      if (task.no == taskNo) {
-        return task;
-      }
-      cursor = cursor.next;
-    }
-    return null;
-  }
-
-  // 작업 번호에 해당하는 인스턴스를 찾아 리턴한다.
-  Task findByNo(int taskNo) {
-    Node cursor = first;
-    while (cursor != null) {
-      Task task = cursor.task;
-      if (task.no == taskNo) {
-        return task;
-      }
-      cursor = cursor.next;
-    }
-    return null;
   }
 
   String inputMember(String promptTitle) {
@@ -211,16 +140,6 @@ public class TaskHandler {
         return "완료";
       default:
         return "신규";
-    }
-  }
-
-  static class Node{
-    Task task;
-    Node next;
-    Node prev;
-
-    Node(Task t){
-      this.task = t;
     }
   }
 }

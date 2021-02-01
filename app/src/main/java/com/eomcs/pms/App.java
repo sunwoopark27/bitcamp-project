@@ -12,8 +12,8 @@ public class App {
 
     BoardHandler boardHandler = new BoardHandler();
     MemberHandler memberHandler = new MemberHandler();
-    ProjectHandler projectHandler = new ProjectHandler(memberHandler);
-    TaskHandler taskHandler = new TaskHandler(memberHandler);
+    ProjectHandler projectHandler = new ProjectHandler(memberHandler.memberList);
+    TaskHandler taskHandler = new TaskHandler(memberHandler.memberList);
 
 
     loop:
@@ -27,7 +27,7 @@ public class App {
           case "/member/list":
             memberHandler.list();
             break;
-          case "/member/ detail":
+          case "/member/detail":
             memberHandler.detail();
             break;  
           case "/member/update":
