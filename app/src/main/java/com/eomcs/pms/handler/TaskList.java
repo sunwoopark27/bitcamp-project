@@ -5,11 +5,11 @@ import com.eomcs.pms.domain.Task;
 public class TaskList {
   static final int LENGTH = 100;
 
-  Node first;
-  Node last;
-  int size = 0;  
+  private Node first;
+  private Node last;
+  private int size = 0;  
 
-  void add(Task t) {
+  public void add(Task t) {
 
     Node node = new Node(t);
 
@@ -25,7 +25,7 @@ public class TaskList {
     this.size++;
   }
 
-  Task[] toArray() {
+  public Task[] toArray() {
 
     Task[] arr = new Task[this.size];
     Node cursor = first;
@@ -38,11 +38,11 @@ public class TaskList {
     return arr;
   }
 
-  Task get(int taskNo){
+  public Task get(int taskNo){
     Node cursor = first;
     while (cursor != null) {
       Task t = cursor.task;
-      if (t.no == taskNo) {
+      if (t.getNo() == taskNo) {
         return t;
       }
       cursor = cursor.next;
@@ -50,11 +50,11 @@ public class TaskList {
     return null;
   }
 
-  void delete(int taskNo) {
+  public void delete(int taskNo) {
 
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.task.no == taskNo) {
+      if (cursor.task.getNo() == taskNo) {
         if (first == last) {
           first = last = null;
           break;

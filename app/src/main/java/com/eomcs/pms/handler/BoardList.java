@@ -4,12 +4,12 @@ import com.eomcs.pms.domain.Board;
 
 public class BoardList {
 
-  Node first;
-  Node last;
+  private Node first;
+  private Node last;
 
-  int size = 0;
+  private int size = 0;
 
-  void add(Board b) {
+  public void add(Board b) {
 
     Node node = new Node(b);
 
@@ -26,7 +26,7 @@ public class BoardList {
 
   }
 
-  Board[] toArray() {
+  public Board[] toArray() {
     // 현재까지 저장된 게시글 목록을 리턴하기 위해 새 배열을 준비한다.
 
     Board[] arr = new Board[size];
@@ -42,11 +42,11 @@ public class BoardList {
     //얘를 리턴 하면 안돼 현재가지 저장된 값을 리턴
   }
 
-  Board get(int boardNo) {
+  public Board get(int boardNo) {
     Node cursor = first;
     while (cursor != null) {
       Board b = cursor.board;
-      if (b.no == boardNo) {
+      if (b.getNo() == boardNo) {
         return b;
       }
       cursor = cursor.next;
@@ -54,11 +54,11 @@ public class BoardList {
     return null;
   }
 
-  void delete(int boardNo) {  
+  public void delete(int boardNo) {  
 
     Node cursor = first;
     while (cursor != null) {
-      if (cursor.board.no == boardNo) {
+      if (cursor.board.getNo() == boardNo) {
         if (first == last) {
           first = last = null;
           break;
