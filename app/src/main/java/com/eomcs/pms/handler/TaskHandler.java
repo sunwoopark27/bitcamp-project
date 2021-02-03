@@ -2,13 +2,14 @@ package com.eomcs.pms.handler;
 
 import java.sql.Date;
 import com.eomcs.pms.domain.Task;
+import com.eomcs.util.List;
 import com.eomcs.util.Prompt;
 
 public class TaskHandler {
 
-  MemberHandler memberHandler;
+  private List taskList = new List();
 
-  TaskList taskList = new TaskList();
+  private MemberHandler memberHandler;
 
   public TaskHandler(MemberHandler memberHandler) {
     this.memberHandler = memberHandler;
@@ -30,14 +31,15 @@ public class TaskHandler {
     }
 
     taskList.add(t);
-
+    System.out.println("작업을 등록했습니다.");
   }
 
   public void list() {
     System.out.println("[작업 목록]");
 
-    Task[] tasks = taskList.toArray();
-    for(Task t : tasks) {
+    Object[] list = taskList.toArray();
+    for (Object obj : list) {
+      Task t = (Task)obj;
       System.out.printf("%d, %s, %s, %s, %s\n", 
           t.getNo(), t.getContent(), t.getDeadline(), getStatusLabel(t.getStatus()), t.getOwner());
     }
@@ -48,7 +50,7 @@ public class TaskHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = taskList.get(no);
+    Task task = findByNo(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -61,12 +63,14 @@ public class TaskHandler {
 
   }
 
+
+
   public void update() {
     System.out.println("[작업 변경]");
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = taskList.get(no);
+    Task task = findByNo(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -101,7 +105,7 @@ public class TaskHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Task task = taskList.get(no);
+    Task task = findByNo(no);
     if (task == null) {
       System.out.println("해당 번호의 작업이 없습니다.");
       return;
@@ -110,7 +114,7 @@ public class TaskHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      taskList.delete(no);
+      taskList.delete(task);
       System.out.println("작업을 삭제하였습니다.");
 
     } else {
@@ -128,5 +132,17 @@ public class TaskHandler {
       default:
         return "신규";
     }
+  }
+
+
+  private Task findByNo(int taskNo) {
+    Object[] list = taskList.toArray();
+    for(Object obj : list) {
+      Task t = (Task)obj;
+      if(t.getNo() == taskNo) {
+        return t;
+      }
+    }
+    return null;
   }
 }

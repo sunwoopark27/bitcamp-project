@@ -2,12 +2,14 @@ package com.eomcs.pms.handler;
 
 import java.sql.Date;
 import com.eomcs.pms.domain.Project;
+import com.eomcs.util.List;
 import com.eomcs.util.Prompt;
 
 public class ProjectHandler {
 
-  ProjectList projectList = new ProjectList();
-  MemberHandler memberHandler;
+  private List projectList = new List();
+
+  private MemberHandler memberHandler;
 
   public ProjectHandler(MemberHandler memberHandler) {
     this.memberHandler = memberHandler;
@@ -33,14 +35,15 @@ public class ProjectHandler {
 
     projectList.add(p);
 
+    System.out.println("프로젝트를 등록했습니다.");
   }
 
   public void list() {
     System.out.println("[프로젝트 목록]");
 
-    Project[] projects = projectList.toArray();
-
-    for(Project p : projects) {
+    Object[] list = projectList.toArray();
+    for (Object obj : list) {
+      Project p = (Project) obj;
       System.out.printf("%d, %s, %s, %s, %s, [%s]\n",
           p.getNo(), p.getTitle(), p.getStartDate(), p.getEndDate(), p.getOwner(), p.getMembers());
     }
@@ -51,7 +54,7 @@ public class ProjectHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Project project = projectList.get(no);
+    Project project = findByNo(no);
     if (project == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
       return;
@@ -71,7 +74,7 @@ public class ProjectHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Project project = projectList.get(no);
+    Project project = findByNo(no);
     if (project == null) {
       System.out.println("해당 번호의 프로젝트가 없습니다.");
       return;
@@ -113,7 +116,7 @@ public class ProjectHandler {
 
     int no = Prompt.inputInt("번호? ");
 
-    Project project = projectList.get(no);
+    Project project = findByNo(no);
     if (project == null) {
       System.out.println("해당 번호의 프로젝트이 없습니다.");
       return;
@@ -122,8 +125,7 @@ public class ProjectHandler {
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      projectList.delete(no);
-
+      projectList.delete(project);
       System.out.println("프로젝트을 삭제하였습니다.");
 
     } else {
@@ -132,6 +134,17 @@ public class ProjectHandler {
 
   }
 
+
+  private Project findByNo(int projectNo) {
+    Object[] list = projectList.toArray();
+    for(Object obj : list) {
+      Project p = (Project)obj;
+      if(p.getNo() == projectNo) {
+        return p;
+      }
+    }
+    return null;
+  }
 }
 
 
