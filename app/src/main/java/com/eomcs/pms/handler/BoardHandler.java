@@ -2,6 +2,7 @@ package com.eomcs.pms.handler;
 
 import java.sql.Date;
 import com.eomcs.pms.domain.Board;
+import com.eomcs.util.Iterator;
 import com.eomcs.util.List;
 import com.eomcs.util.Prompt;
 
@@ -25,13 +26,13 @@ public class BoardHandler {
     System.out.println("게시글을 등록하였습니다.");
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[게시글 목록]");
 
-    Object[] list = boardList.toArray();
+    Iterator iterator = boardList.iterator();
 
-    for (Object obj : list) {
-      Board b = (Board)obj;
+    while (iterator.hasNext()) {
+      Board b = (Board) iterator.next();
       System.out.printf("%d, %s, %s, %s, %d, %d\n", 
           b.getNo(), 
           b.getTitle(), 

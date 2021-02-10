@@ -1,6 +1,7 @@
 package com.eomcs.pms.handler;
 
 import com.eomcs.pms.domain.Member;
+import com.eomcs.util.Iterator;
 import com.eomcs.util.List;
 import com.eomcs.util.Prompt;
 
@@ -30,12 +31,12 @@ public class MemberHandler {
     System.out.println("회원을 등록하였습니다.");
   }
 
-  public void list() {
+  public void list() throws CloneNotSupportedException {
     System.out.println("[회원 목록]");
 
-    Object[] list = memberList.toArray();
-    for (Object obj : list) {
-      Member m = (Member) obj;
+    Iterator iterator = memberList.iterator();
+    while (iterator.hasNext()) {
+      Member m = (Member)iterator.next();
       System.out.printf("%d, %s, %s, %s, %s\n", // 출력 형식 지정
           m.getNo(), m.getName(), m.getEmail(), m.getTel(), m.getRegisteredDate());
     }

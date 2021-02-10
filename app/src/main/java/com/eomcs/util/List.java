@@ -134,7 +134,7 @@ public class List {
     return this.size;
   }
 
-  static class Node {
+  private static class Node {
     Object obj;
     Node next;
     Node prev;
@@ -143,4 +143,33 @@ public class List {
       this.obj = o;
     }
   }
+
+  public Iterator iterator() throws CloneNotSupportedException{
+
+    return new Iterator() {
+
+      int cursor = 0; // 어디까지 꺼냈는지
+
+      @Override
+      public boolean hasNext() {
+        // 로컬 클래스에서 바깥 클래스의 인스턴스 주소 사용할 떄는
+        // => 바깥 클래스명.this
+        // 예) List.this
+        return cursor < List.this.size();
+      }
+
+      @Override
+      public Object next() {
+        return List.this.get(cursor++);
+        // 위의 문장은 컴파일 하면 다음 문장으로 바뀐다.
+        //    int temp = cursor;
+        //    cursor = cursor + 1;
+        //    return list.get(temp);
+      }
+    };
+
+  }
+
+
+
 }
