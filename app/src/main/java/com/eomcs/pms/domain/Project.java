@@ -11,15 +11,14 @@ public class Project {
   private String owner;
   private String members;
 
-
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
     result = prime * result + no;
-    result = prime * result + ((owner == null) ? 0 : owner.hashCode());
     result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
     return result;
   }
 
@@ -39,15 +38,15 @@ public class Project {
       return false;
     if (no != other.no)
       return false;
-    if (owner == null) {
-      if (other.owner != null)
-        return false;
-    } else if (!owner.equals(other.owner))
-      return false;
     if (startDate == null) {
       if (other.startDate != null)
         return false;
     } else if (!startDate.equals(other.startDate))
+      return false;
+    if (title == null) {
+      if (other.title != null)
+        return false;
+    } else if (!title.equals(other.title))
       return false;
     return true;
   }

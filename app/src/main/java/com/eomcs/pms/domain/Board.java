@@ -11,6 +11,7 @@ public class Board {
   private int viewCount;
   private int like;
 
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -48,7 +49,6 @@ public class Board {
   public int getNo() {
     return no;
   }
-
   public void setNo(int no) {
     this.no = no;
   }

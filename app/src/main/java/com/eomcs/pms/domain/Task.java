@@ -9,14 +9,13 @@ public class Task {
   private String owner;
   private int status;
 
-
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((content == null) ? 0 : content.hashCode());
     result = prime * result + ((deadline == null) ? 0 : deadline.hashCode());
-    result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+    result = prime * result + no;
     return result;
   }
 
@@ -39,10 +38,7 @@ public class Task {
         return false;
     } else if (!deadline.equals(other.deadline))
       return false;
-    if (owner == null) {
-      if (other.owner != null)
-        return false;
-    } else if (!owner.equals(other.owner))
+    if (no != other.no)
       return false;
     return true;
   }
@@ -50,7 +46,6 @@ public class Task {
   public int getNo() {
     return no;
   }
-
   public void setNo(int no) {
     this.no = no;
   }

@@ -39,8 +39,9 @@ public class TaskHandler {
     System.out.println("[작업 목록]");
 
     Iterator iterator = taskList.iterator();
+
     while (iterator.hasNext()) {
-      Task t = (Task)iterator.next();
+      Task t = (Task) iterator.next();
       System.out.printf("%d, %s, %s, %s, %s\n", 
           t.getNo(), t.getContent(), t.getDeadline(), getStatusLabel(t.getStatus()), t.getOwner());
     }
@@ -135,12 +136,11 @@ public class TaskHandler {
     }
   }
 
-
   private Task findByNo(int taskNo) {
     Object[] list = taskList.toArray();
-    for(Object obj : list) {
-      Task t = (Task)obj;
-      if(t.getNo() == taskNo) {
+    for (Object obj : list) {
+      Task t = (Task) obj;
+      if (t.getNo() == taskNo) {
         return t;
       }
     }

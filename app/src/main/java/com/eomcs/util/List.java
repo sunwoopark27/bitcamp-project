@@ -4,11 +4,10 @@ public class List {
 
   private Node first;
   private Node last;
-  protected int size = 0;
+  protected int size = 0;  
 
-
-  public void add(Object o) {
-    Node node = new Node(o);
+  public void add(Object obj) {
+    Node node = new Node(obj);
 
     if (last == null) { // 연결 리스트의 첫 항목이라면,
       last = node;
@@ -36,13 +35,12 @@ public class List {
   }
 
   public Object get(int index) {
-
-    if(index < 0 || index >= this.size) {
+    if (index < 0 || index >= this.size) {
       return null;
     }
 
-    Node cursor = first;
     int count = 0;
+    Node cursor = first;
     while (cursor != null) {
       if (index == count++) {
         return cursor.obj;
@@ -53,15 +51,13 @@ public class List {
   }
 
   public boolean delete(Object obj) {
-
-    int count = 0;
     Node cursor = first;
     while (cursor != null) {
       if (cursor.obj.equals(obj)) {
         this.size--;
         if (first == last) {
           first = last = null;
-          break;
+          return true;
         }
         if (cursor == first) {
           first = cursor.next;
@@ -75,7 +71,7 @@ public class List {
         if (cursor == last) {
           last = cursor.prev;
         }
-        break;
+        return true;
       }
       cursor = cursor.next;
     }
@@ -83,18 +79,16 @@ public class List {
   }
 
   public Object delete(int index) {
-
-    if(index < 0 || index >= this.size) {
+    if (index < 0 || index >= this.size) {
       return null;
     }
 
     Object deleted = null;
-
     int count = 0;
     Node cursor = first;
     while (cursor != null) {
       if (index == count++) {
-        deleted = cursor.obj;
+        deleted = cursor.obj; // 삭제될 항목을 보관해 둔다.
         this.size--;
         if (first == last) {
           first = last = null;
@@ -119,11 +113,10 @@ public class List {
     return deleted;
   }
 
-
   public int indexOf(Object obj) {
     Object[] list = this.toArray();
-    for(int i = 0; i < list.length; i++) {
-      if(list[i].equals(obj)) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].equals(obj)) {
         return i;
       }
     }
@@ -139,35 +132,29 @@ public class List {
     Node next;
     Node prev;
 
-    Node(Object o) {
-      this.obj = o;
+    Node(Object obj) {
+      this.obj = obj;
     }
   }
 
-  public Iterator iterator() throws CloneNotSupportedException{
+  interface X {
+    void m();
+  }
 
+  public Iterator iterator() throws CloneNotSupportedException {
     return new Iterator() {
-
-      int cursor = 0; // 어디까지 꺼냈는지
+      int cursor = 0;
 
       @Override
       public boolean hasNext() {
-        // 로컬 클래스에서 바깥 클래스의 인스턴스 주소 사용할 떄는
-        // => 바깥 클래스명.this
-        // 예) List.this
         return cursor < List.this.size();
       }
 
       @Override
       public Object next() {
         return List.this.get(cursor++);
-        // 위의 문장은 컴파일 하면 다음 문장으로 바뀐다.
-        //    int temp = cursor;
-        //    cursor = cursor + 1;
-        //    return list.get(temp);
       }
     };
-
   }
 
 

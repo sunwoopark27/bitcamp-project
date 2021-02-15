@@ -11,15 +11,13 @@ public class Member {
   private String tel;
   private Date registeredDate;
 
-
-
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((email == null) ? 0 : email.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
-    result = prime * result + ((password == null) ? 0 : password.hashCode());
-    result = prime * result + ((tel == null) ? 0 : tel.hashCode());
+    result = prime * result + no;
     return result;
   }
 
@@ -32,20 +30,17 @@ public class Member {
     if (getClass() != obj.getClass())
       return false;
     Member other = (Member) obj;
+    if (email == null) {
+      if (other.email != null)
+        return false;
+    } else if (!email.equals(other.email))
+      return false;
     if (name == null) {
       if (other.name != null)
         return false;
     } else if (!name.equals(other.name))
       return false;
-    if (password == null) {
-      if (other.password != null)
-        return false;
-    } else if (!password.equals(other.password))
-      return false;
-    if (tel == null) {
-      if (other.tel != null)
-        return false;
-    } else if (!tel.equals(other.tel))
+    if (no != other.no)
       return false;
     return true;
   }
