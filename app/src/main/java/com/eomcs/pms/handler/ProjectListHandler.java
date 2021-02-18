@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import com.eomcs.pms.domain.Project;
 
-public class ProjectListHandler extends AbstractProjectHandler{
+public class ProjectListHandler extends AbstractProjectHandler {
 
   public ProjectListHandler(List<Project> projectList) {
     super(projectList);
@@ -22,7 +22,6 @@ public class ProjectListHandler extends AbstractProjectHandler{
           p.getNo(), p.getTitle(), p.getStartDate(), p.getEndDate(), p.getOwner(), p.getMembers());
     }
   }
-
 
 }
 

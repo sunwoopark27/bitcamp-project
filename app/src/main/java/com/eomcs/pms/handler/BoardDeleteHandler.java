@@ -7,7 +7,6 @@ import com.eomcs.util.Prompt;
 public class BoardDeleteHandler extends AbstractBoardHandler{
 
   public BoardDeleteHandler(List<Board> boardList) {
-    // super(); 원래 자동삽입
     super(boardList);
   }
 
@@ -26,16 +25,15 @@ public class BoardDeleteHandler extends AbstractBoardHandler{
     String input = Prompt.inputString("정말 삭제하시겠습니까?(y/N) ");
 
     if (input.equalsIgnoreCase("Y")) {
-      boardList.remove(board); // 오버로딩한 메서드를 사용하여 삭제한다.
+      boardList.remove(board); 
 
       System.out.println("게시글을 삭제하였습니다.");
 
     } else {
       System.out.println("게시글 삭제를 취소하였습니다.");
     }
+
   }
-
-
 }
 
 

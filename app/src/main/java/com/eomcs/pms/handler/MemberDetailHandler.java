@@ -35,5 +35,3 @@ public class MemberDetailHandler extends AbstractMemberHandler {
 
 
 
-
-

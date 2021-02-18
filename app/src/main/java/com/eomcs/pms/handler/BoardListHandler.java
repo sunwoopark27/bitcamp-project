@@ -27,7 +27,6 @@ public class BoardListHandler extends AbstractBoardHandler{
           b.getLike());
     }
   }
-
 }
 
 

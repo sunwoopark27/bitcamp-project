@@ -4,14 +4,11 @@ import java.util.List;
 import com.eomcs.pms.domain.Project;
 import com.eomcs.util.Prompt;
 
-public class ProjectDeleteHandler extends AbstractProjectHandler {
-
-  private List<Project> projectList;
+public class ProjectDeleteHandler extends AbstractProjectHandler{
 
   public ProjectDeleteHandler(List<Project> projectList) {
     super(projectList);
   }
-
 
   @Override
   public void service() {

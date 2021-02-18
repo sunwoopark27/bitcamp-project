@@ -18,11 +18,11 @@ public class MemberListHandler extends AbstractMemberHandler {
 
     while (iterator.hasNext()) {
       Member m = iterator.next();
-      // 번호, 이름, 이메일, 전화, 가입일
-      System.out.printf("%d, %s, %s, %s, %s\n", // 출력 형식 지정
+      System.out.printf("%d, %s, %s, %s, %s\n",
           m.getNo(), m.getName(), m.getEmail(), m.getTel(), m.getRegisteredDate());
     }
   }
+
 
 }
 
