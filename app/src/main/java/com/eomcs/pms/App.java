@@ -1,10 +1,19 @@
 package com.eomcs.pms;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
@@ -40,13 +49,25 @@ public class App {
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
+  // VO 를 저장할 객체
+  static List<Board> boardList;
+  static List<Member> memberList;
+  static List<Project> projectList ;
+  static List<Task> taskList;
 
-  public static void main(String[] args) throws CloneNotSupportedException {
+  // 데이터 파일 정보
+  static File boardFile = new File("boards.data");
+  static File memberFile = new File("members.data");
+  static File projectFile = new File("projects.data");
+  static File taskFile = new File("tasks.data");
 
-    ArrayList<Board> boardList = new ArrayList<>();
-    ArrayList<Member> memberList = new ArrayList<>();
-    LinkedList<Project> projectList = new LinkedList<>();
-    LinkedList<Task> taskList = new LinkedList<>();
+  public static void main(String[] args) {
+
+    // 파일에서 데이터를 읽어온다.(데이터 로딩)
+    boardList = loadObjects(boardFile, Board.class);
+    memberList = loadObjects(memberFile, Member.class); 
+    projectList = loadObjects(projectFile, Project.class);
+    taskList = loadObjects(taskFile, Task.class); 
 
     HashMap<String,Command> commandMap = new HashMap<>();
 
@@ -117,6 +138,12 @@ public class App {
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
       }
 
+    // 게시글 데이터를 파일로 출력한다.
+    saveObjects(boardFile, boardList);
+    saveObjects(memberFile, memberList);
+    saveObjects(projectFile, projectList);
+    saveObjects(taskFile, taskList);
+
     Prompt.close();
   }
 
@@ -130,6 +157,34 @@ public class App {
           break;
         }
       }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
+    try (ObjectInputStream in = new ObjectInputStream(
+        new BufferedInputStream(
+            new FileInputStream(file)))) {
+
+      System.out.printf("파일 %s 로딩!\n", file.getName());
+      return (List<T>) in.readObject();
+
+    } catch (Exception e){
+      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
+      return new ArrayList<>();
+    }
+  }
+
+  static <T extends Serializable> void saveObjects(File file, List<T> dataList) {
+    try (ObjectOutputStream out = new ObjectOutputStream(
+        new BufferedOutputStream(
+            new FileOutputStream(file)))){
+
+      out.writeObject(dataList);
+      System.out.printf("파일 %s 저장!\n", file.getName());
+
+    } catch (Exception e) {
+      System.out.printf("파일 %s 저장 중 오류 발생 \n", file.getName());
     }
   }
 }
