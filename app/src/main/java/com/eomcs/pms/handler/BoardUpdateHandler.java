@@ -36,7 +36,6 @@ public class BoardUpdateHandler extends AbstractBoardHandler {
       System.out.println("게시글 변경을 취소하였습니다.");
     }
   }
-
 }
 
 

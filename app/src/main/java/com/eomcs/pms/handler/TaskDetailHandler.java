@@ -28,5 +28,4 @@ public class TaskDetailHandler extends AbstractTaskHandler {
     System.out.printf("담당자: %s\n", task.getOwner());
 
   }
-
 }

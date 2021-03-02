@@ -5,7 +5,7 @@ import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.util.Prompt;
 
-public class BoardAddHandler extends AbstractBoardHandler{
+public class BoardAddHandler extends AbstractBoardHandler {
 
   public BoardAddHandler(List<Board> boardList) {
     super(boardList);
@@ -27,7 +27,6 @@ public class BoardAddHandler extends AbstractBoardHandler{
 
     System.out.println("게시글을 등록하였습니다.");
   }
-
 }
 
 

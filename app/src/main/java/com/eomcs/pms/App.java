@@ -1,19 +1,12 @@
 package com.eomcs.pms;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.pms.domain.Member;
 import com.eomcs.pms.domain.Project;
@@ -25,6 +18,7 @@ import com.eomcs.pms.handler.BoardListHandler;
 import com.eomcs.pms.handler.BoardSearchHandler;
 import com.eomcs.pms.handler.BoardUpdateHandler;
 import com.eomcs.pms.handler.Command;
+import com.eomcs.pms.handler.HelloHandler;
 import com.eomcs.pms.handler.MemberAddHandler;
 import com.eomcs.pms.handler.MemberDeleteHandler;
 import com.eomcs.pms.handler.MemberDetailHandler;
@@ -49,26 +43,15 @@ public class App {
   static ArrayDeque<String> commandStack = new ArrayDeque<>();
   static LinkedList<String> commandQueue = new LinkedList<>();
 
-  // VO 를 저장할 객체
-  static List<Board> boardList;
-  static List<Member> memberList;
-  static List<Project> projectList ;
-  static List<Task> taskList;
+  static ArrayList<Board> boardList = new ArrayList<>();
+  static ArrayList<Member> memberList = new ArrayList<>();
+  static LinkedList<Project> projectList = new LinkedList<>();
+  static LinkedList<Task> taskList = new LinkedList<>();
 
-  // 데이터 파일 정보
-  static File boardFile = new File("boards.data");
-  static File memberFile = new File("members.data");
-  static File projectFile = new File("projects.data");
-  static File taskFile = new File("tasks.data");
+  public static void main(String[] args) throws CloneNotSupportedException {
 
-  public static void main(String[] args) {
 
-    // 파일에서 데이터를 읽어온다.(데이터 로딩)
-    boardList = loadObjects(boardFile, Board.class);
-    memberList = loadObjects(memberFile, Member.class); 
-    projectList = loadObjects(projectFile, Project.class);
-    taskList = loadObjects(taskFile, Task.class); 
-
+    // 사용자 명령을 처리하는 객체를 맵에 보관한다.
     HashMap<String,Command> commandMap = new HashMap<>();
 
     commandMap.put("/board/add", new BoardAddHandler(boardList));
@@ -76,7 +59,6 @@ public class App {
     commandMap.put("/board/detail", new BoardDetailHandler(boardList));
     commandMap.put("/board/update", new BoardUpdateHandler(boardList));
     commandMap.put("/board/delete", new BoardDeleteHandler(boardList));
-    commandMap.put("/board/search", new BoardSearchHandler(boardList));
 
     commandMap.put("/member/add", new MemberAddHandler(memberList));
     commandMap.put("/member/list", new MemberListHandler(memberList));
@@ -96,6 +78,10 @@ public class App {
     commandMap.put("/task/detail", new TaskDetailHandler(taskList));
     commandMap.put("/task/update", new TaskUpdateHandler(taskList, memberValidatorHandler));
     commandMap.put("/task/delete", new TaskDeleteHandler(taskList));
+
+    // 새 기능 추가
+    commandMap.put("/board/search", new BoardSearchHandler(boardList));
+    commandMap.put("/hello", new HelloHandler());
 
     loop:
       while (true) {
@@ -121,12 +107,14 @@ public class App {
               System.out.println("안녕!");
               break loop;
             default:
-
               Command commandHandler = commandMap.get(command);
+
               if (commandHandler == null) {
                 System.out.println("실행할 수 없는 명령입니다.");
               } else {
                 commandHandler.service();
+                // 이제 명령어와 그 명령어를 처리하는 핸들러를 추가할 때 마다
+                // case 문을 추가할 필요가 없다.
               }
           }
         } catch (Exception e) {
@@ -137,12 +125,6 @@ public class App {
         }
         System.out.println(); // 이전 명령의 실행을 구분하기 위해 빈 줄 출력
       }
-
-    // 게시글 데이터를 파일로 출력한다.
-    saveObjects(boardFile, boardList);
-    saveObjects(memberFile, memberList);
-    saveObjects(projectFile, projectList);
-    saveObjects(taskFile, taskList);
 
     Prompt.close();
   }
@@ -160,31 +142,31 @@ public class App {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  static <T extends Serializable> List<T> loadObjects(File file, Class<T> dataType) {
-    try (ObjectInputStream in = new ObjectInputStream(
-        new BufferedInputStream(
-            new FileInputStream(file)))) {
+  static void saveBoards() {
+    try(FileOutputStream out = new FileOutputStream("boards.data")){
+      int size = boardList.size();
+      out.write(size >> 8);
+      out.write(size);
 
-      System.out.printf("파일 %s 로딩!\n", file.getName());
-      return (List<T>) in.readObject();
+      for(Board b : boardList) {
+        out.write(b.getNo() >> 24);
+        out.write(b.getNo() >> 16);
+        out.write(b.getNo() >> 8);
+        out.write(b.getNo());
 
-    } catch (Exception e){
-      System.out.printf("파일 %s 로딩 중 오류 발생!\n", file.getName());
-      return new ArrayList<>();
+        byte[] buf = b.getTitle().getBytes("UTF-8");
+      }
+
+
+    }catch(Exception e) {
+      System.out.println("게시물 데이터 저장 중 오류 발생");
     }
   }
-
-  static <T extends Serializable> void saveObjects(File file, List<T> dataList) {
-    try (ObjectOutputStream out = new ObjectOutputStream(
-        new BufferedOutputStream(
-            new FileOutputStream(file)))){
-
-      out.writeObject(dataList);
-      System.out.printf("파일 %s 저장!\n", file.getName());
-
+  static void loadBoards() {
+    try(FileInputStream in = new FileInputStream("boards.data")){
+      int size = in.read() << 8
     } catch (Exception e) {
-      System.out.printf("파일 %s 저장 중 오류 발생 \n", file.getName());
+      System.out.println("게시글 데이터 로딩 중 오류 발생!");
     }
   }
 }

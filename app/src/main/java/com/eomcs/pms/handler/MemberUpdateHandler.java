@@ -40,7 +40,6 @@ public class MemberUpdateHandler extends AbstractMemberHandler {
       System.out.println("회원 변경을 취소하였습니다.");
     }
   }
-
 }
 
 

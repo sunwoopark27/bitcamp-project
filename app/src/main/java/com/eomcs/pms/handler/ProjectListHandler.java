@@ -22,7 +22,6 @@ public class ProjectListHandler extends AbstractProjectHandler {
           p.getNo(), p.getTitle(), p.getStartDate(), p.getEndDate(), p.getOwner(), p.getMembers());
     }
   }
-
 }
 
 

@@ -4,7 +4,7 @@ import java.util.List;
 import com.eomcs.pms.domain.Board;
 import com.eomcs.util.Prompt;
 
-public class BoardDeleteHandler extends AbstractBoardHandler{
+public class BoardDeleteHandler extends AbstractBoardHandler {
 
   public BoardDeleteHandler(List<Board> boardList) {
     super(boardList);
@@ -32,7 +32,6 @@ public class BoardDeleteHandler extends AbstractBoardHandler{
     } else {
       System.out.println("게시글 삭제를 취소하였습니다.");
     }
-
   }
 }
 

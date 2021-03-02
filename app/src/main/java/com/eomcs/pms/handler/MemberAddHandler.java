@@ -28,7 +28,6 @@ public class MemberAddHandler extends AbstractMemberHandler {
 
     System.out.println("회원을 등록하였습니다.");
   }
-
 }
 
 

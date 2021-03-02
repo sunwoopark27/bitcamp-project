@@ -22,5 +22,4 @@ public class TaskListHandler extends AbstractTaskHandler {
           t.getNo(), t.getContent(), t.getDeadline(), getStatusLabel(t.getStatus()), t.getOwner());
     }
   }
-
 }

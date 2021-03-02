@@ -22,8 +22,6 @@ public class MemberListHandler extends AbstractMemberHandler {
           m.getNo(), m.getName(), m.getEmail(), m.getTel(), m.getRegisteredDate());
     }
   }
-
-
 }
 
 
