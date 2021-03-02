@@ -144,6 +144,7 @@ public class App {
 
   static void saveBoards() {
     try(FileOutputStream out = new FileOutputStream("boards.data")){
+
       int size = boardList.size();
       out.write(size >> 8);
       out.write(size);
@@ -155,6 +156,14 @@ public class App {
         out.write(b.getNo());
 
         byte[] buf = b.getTitle().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
+
+        buf = b.getContent().getBytes("UTF-8");
+        out.write(buf.length >> 8);
+        out.write(buf.length);
+        out.write(buf);
       }
 
 
@@ -162,9 +171,19 @@ public class App {
       System.out.println("게시물 데이터 저장 중 오류 발생");
     }
   }
-  static void loadBoards() {
+  static void loadBoards() { 
     try(FileInputStream in = new FileInputStream("boards.data")){
-      int size = in.read() << 8
+      int size = in.read() << 8 | in.read();
+
+      for(int i = 0; i < size; i++) {
+        Board b = new Board();
+        b.setNo(in.read() << 24 | in.read() << 16 | in.read() << 8 | in.read());
+
+        int len = in.read() << 8 | in.read();
+        byte[] buf = new byte[len];
+        in.read(buf);
+        b.setTitle(new String(buf,"UTF-8"));
+      }
     } catch (Exception e) {
       System.out.println("게시글 데이터 로딩 중 오류 발생!");
     }
