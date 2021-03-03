@@ -5,8 +5,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,6 +43,7 @@ import com.eomcs.pms.handler.TaskListHandler;
 import com.eomcs.pms.handler.TaskUpdateHandler;
 import com.eomcs.util.Prompt;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class App {
 
@@ -177,6 +180,14 @@ public class App {
       }
       // 파일에서 읽은 JSON 문자열
       System.out.println(strBuilder.toString());
+
+      //2) StringBuilder 객체에 보관된 값을 꺼내 자바 객체로 만든다
+      Gson gson = new Gson();
+      // JSON 문자열 ==> 컬렉션 객체
+      Type collectionType = TypeToken.getParameterized(Collection.class, elementType).getClass();
+
+      Collection<T> collection = gson.fromJson(strBuilder.toString(), collectionType);
+      list.addAll(collection);
 
       System.out.printf("%s 파일 데이터 로딩!\n", file.getName());
 
