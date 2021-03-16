@@ -12,25 +12,6 @@ public class Member implements CsvObject {
   private String tel;
   private Date registeredDate;
 
-  public Member() {}
-
-  public Member(String csv) {
-    String[] fields = csv.split(",");
-    this.setNo(Integer.parseInt(fields[0]));
-    this.setName(fields[1]);
-    this.setEmail(fields[2]);
-    this.setPassword(fields[3]);
-    this.setPhoto(fields[4]);
-    this.setTel(fields[5]);
-    this.setRegisteredDate(Date.valueOf(fields[6]));
-  }
-
-  @Override
-  public String toString() {
-    return "Member [no=" + no + ", name=" + name + ", email=" + email + ", password=" + password
-        + ", photo=" + photo + ", tel=" + tel + ", registeredDate=" + registeredDate + "]";
-  }
-
   @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%s", 
