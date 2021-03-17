@@ -10,6 +10,17 @@ public class Task implements CsvObject {
   private String owner;
   private int status;
 
+  public Task() {}
+
+  public Task(String csv) {
+    String[] data = csv.split(",");
+    this.setNo(Integer.parseInt(data[0]));
+    this.setContent(data[1]);
+    this.setDeadline(Date.valueOf(data[2]));
+    this.setStatus(Integer.parseInt(data[3]));
+    this.setOwner(data[4]);
+  }
+
   @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%d,%s", 

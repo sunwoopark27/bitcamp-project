@@ -3,7 +3,7 @@ package com.eomcs.pms.domain;
 import java.sql.Date;
 import com.eomcs.util.CsvObject;
 
-public class Board implements CsvObject{
+public class Board implements CsvObject {
   private int no;
   private String title;
   private String content;
