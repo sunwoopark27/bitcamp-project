@@ -26,12 +26,6 @@ public class Member implements CsvObject {
   }
 
   @Override
-  public String toString() {
-    return "Member [no=" + no + ", name=" + name + ", email=" + email + ", password=" + password
-        + ", photo=" + photo + ", tel=" + tel + ", registeredDate=" + registeredDate + "]";
-  }
-
-  @Override
   public String toCsvString() {
     return String.format("%d,%s,%s,%s,%s,%s,%s", 
         this.getNo(),
