@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -40,8 +41,8 @@ import com.eomcs.pms.handler.TaskDetailHandler;
 import com.eomcs.pms.handler.TaskListHandler;
 import com.eomcs.pms.handler.TaskUpdateHandler;
 import com.eomcs.util.CsvObject;
-import com.eomcs.util.ObjectFactory;
 import com.eomcs.util.Prompt;
+import com.google.gson.Gson;
 
 public class App {
 
@@ -62,13 +63,16 @@ public class App {
   static File taskFile = new File("tasks.csv");
 
   public static void main(String[] args) {
+    App app = new App();
+    app.service();
+  }
 
-
+  private void service() {
     // 파일에서 데이터를 읽어온다.(데이터 로딩)
-    loadObjects(boardFile, boardList, Board::new);
-    loadObjects(memberFile, memberList, Member::new);
-    loadObjects(projectFile, projectList, Project::new);
-    loadObjects(taskFile, taskList, Task::new);
+    loadObjects(boardFile, boardList, Board[].class);
+    //loadObjects(memberFile, memberList, Member::new);
+    //loadObjects(projectFile, projectList, Project::new);
+    //loadObjects(taskFile, taskList, Task::new);
 
     // 사용자 명령을 처리하는 객체를 맵에 보관한다.
     HashMap<String,Command> commandMap = new HashMap<>();
@@ -154,7 +158,7 @@ public class App {
     Prompt.close();
   }
 
-  static void printCommandHistory(Iterator<String> iterator) {
+  private void printCommandHistory(Iterator<String> iterator) {
     int count = 0;
     while (iterator.hasNext()) {
       System.out.println(iterator.next());
@@ -167,24 +171,29 @@ public class App {
     }
   }
 
-  static <T> void loadObjects(File file, List<T> list, ObjectFactory<T> objFactory) {
+  private <T> void loadObjects(File file, List<T> list, Class<T[]> arrType) {
     try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-      String csvStr = null;
-      while ((csvStr = in.readLine()) != null) {
-        list.add(objFactory.create(csvStr));
+      StringBuilder strBuilder = new StringBuilder();
+      String  str = null;
+      while ((str = in.readLine()) != null) {
+        strBuilder.append(str);
       }
-      System.out.printf("%s 파일 데이터 로딩!\n", file.getName());
+      // System.out.println(strBuilder.toString());
+      Gson gson = new Gson();
 
+      T[] arr = gson.fromJson(strBuilder.toString(), arrType);
+
+      list.addAll(Arrays.asList(arr));
+
+      System.out.printf("%s 파일 데이터 로딩!\n", file.getName());
     } catch (Exception e) {
       System.out.printf("%s 파일 데이터 로딩 중 오류 발생!\n", file.getName());
     }
   }
 
-  static <T extends CsvObject> void saveObjects(File file, List<T> list) {
+  private <T extends CsvObject> void saveObjects(File file, List<T> list) {
     try (BufferedWriter out = new BufferedWriter(new FileWriter(file))) {
-      for (CsvObject csvObj : list) {
-        out.write(csvObj.toCsvString() + "\n");
-      }
+      out.write(new Gson().toJson(list));
       System.out.printf("파일 %s 데이터 저장!\n", file.getName());
 
     } catch (Exception e) {
